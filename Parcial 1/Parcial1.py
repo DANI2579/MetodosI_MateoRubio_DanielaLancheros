@@ -52,6 +52,7 @@ def biseccion(f,a,b,itmax =100, preci = 1e-10):
             a = c
         else: 
             b = c
+        i+=1
     return c
 
 print("La raiz de la funcion es: " + str(biseccion(f,x1,x0)))
