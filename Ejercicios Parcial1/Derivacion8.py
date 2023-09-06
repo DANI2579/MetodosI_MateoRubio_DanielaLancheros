@@ -27,7 +27,6 @@ plt.scatter(x,df_dxC, color ='orange', s = 10,label = 'Derivada Centrada')
 plt.legend()
 
 plt.show()
-
 plt.close()
 plt.suptitle("Graficacion del error nodal de distintos metodos de derivacion")
 plt.plot(x,np.abs(df_dxE- df_dxE),label = 'Derivada Exacta')
