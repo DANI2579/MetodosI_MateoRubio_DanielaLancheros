@@ -122,11 +122,8 @@ def GetWeightsGHer(n):
     Poly = sym.lambdify([x],pol,'numpy')
     a = (2**(n-1))*np.math.factorial(n)*np.sqrt(np.pi)
     return a/((n**2)*((Poly(roots))**2))
-##punto a:
-#print(GetWeightsGHer(20))
-#print(GetAllRootsGHer(20))
-##punto b:
-def IntegrateGHer(f,n):
+
+def IntegrateHermite(f,n):
     I=0
     pesos = GetWeightsGHer(n)
     functions = f(GetAllRootsGHer(n))
@@ -134,14 +131,60 @@ def IntegrateGHer(f,n):
         I+= pesos[i]*functions[i]
     return I
 def GetPunto18():
+    print(GetWeightsGHer(20))
+    print(GetAllRootsGHer(20))
     f = lambda x: 4*(x**2)*(x**2)
-    return  ((1/(np.sqrt(2)*(pow(np.pi,1/4))))**2)*IntegrateGHer(f,5) 
+    return  ((1/(np.sqrt(2)*(pow(np.pi,1/4))))**2)*IntegrateHermite(f,5) 
 
 #print(GetPunto18())
 
 ################################################################################################################################################################
 ########################################################################Punto 19################################################################################
 
-    
- 
+def GetLegendre(n,x):
+    return  sym.diff( (x**2 - 1)**n,x,n )/(2**n*np.math.factorial(n))
+
+def GetAllRootsGLeg(n):
+    x = sym.Symbol('x',real = True)
+    X = np.linspace(-1,1,100)
+    pol = GetLegendre(n,x)
+    Poly = sym.lambdify([x],pol,'numpy')
+    Dpoly = sym.lambdify([x],sym.diff(pol,x,1),'numpy')
+    return GetRoots(Poly,Dpoly,X)
+
+def GetWeightsGLeg(n):
+    x = sym.Symbol('x',real = True)
+    Roots = GetAllRootsGLeg(n)
+    pol = GetLegendre(n,x)
+    Dpoly = sym.lambdify([x],sym.diff(pol,x,1),'numpy')
+    return 2/((1-(np.square(Roots))) * (np.square(Dpoly(Roots))))
+
+def IntegrateLegendre(f,n):
+    I = 0
+    pesos = GetWeightsGLeg(n)
+    raices = GetAllRootsGLeg(n)
+    for i in range(n): 
+        I += pesos[i] * f(raices[i])
+    return I
+
+def GetPunto19():
+    dT = 10**-4  
+    i =0
+    centinela = True 
+    f = lambda x,T,delta : np.tanh(np.sqrt(np.square(x) + np.square(delta))*(300/(2*T)))/(np.sqrt(np.square(x) + np.square(delta)))
+    while i <= 1 and centinela:
+        fx = lambda x: f(x,12.1331,0)
+        I = IntegrateLegendre(fx,34)
+        if(np.abs(I-(1/(0.3))) <dT):
+            centinela = False
+        else:
+            dT*=dT
+        i+=1
+    return I
+#f = lambda x: x
+#print(IntegrateLegendre(f,50))
+print(GetPunto19())
+
+#print(np.size(np.polynomial.legendre.leggauss(50)[0]))
+#print(np.size(GetAllRootsGLeg(50)))
 
