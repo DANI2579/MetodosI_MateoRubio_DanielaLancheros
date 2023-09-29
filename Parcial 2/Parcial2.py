@@ -37,7 +37,7 @@ def IntegrateDenom(f):
     return I
 
 resultado = integralab(f,a,b,20)/IntegrateDenom(f1) 
-print(resultado)
+print(np.round(resultado*100,2))
 
 #####D) Esto se debe a que gracias a la capa de ozono y la atmosfera,
 ###### los rayos ultravioletas se dispersan haciendo que le porcentaje
