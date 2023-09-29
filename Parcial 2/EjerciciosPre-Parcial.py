@@ -18,7 +18,7 @@ def GetLaguerreRecursive(n,x):
     else: 
         return ((((2*(n-1))+(1-x))*GetLaguerreRecursive(n-1,x))-((n-1)*GetLaguerreRecursive(n-2,x)))/(n)
 
-def GetNewton(f,df,xn,itmax=10000,precision=1e-14):
+def GetNewton(f,df,xn,itmax=10000,precision=1e-16):
     
     error = 1.
     it = 0
@@ -42,7 +42,7 @@ def GetNewton(f,df,xn,itmax=10000,precision=1e-14):
     else:
         return xn
     
-def GetRoots(f,df,x,tolerancia = 10):
+def GetRoots(f,df,x,tolerancia = 7):
     
     Roots = np.array([])
     
@@ -56,7 +56,9 @@ def GetRoots(f,df,x,tolerancia = 10):
             
             if croot not in Roots:
                 Roots = np.append(Roots, croot)
-                
+    if np.abs(f(0)) == 0. and not 0. in Roots:
+        np.append(Roots,0.)
+        
     Roots.sort()
     
     return Roots
@@ -96,6 +98,29 @@ def GetPunto17():
     plt.show()  
     return IntegrationLaguerre(3,f)
 
-print(GetPunto17())
+#print(GetPunto17())
+
 ################################################################################################################################################################
 ########################################################################Punto 18################################################################################
+
+def GetHermite(n,x):    
+    poly = (-1)**n*e**(x**2)*sym.diff((e**(-(x**2))),x,n)
+    return poly 
+
+def GetAllRootsGHer(n):
+    x = sym.Symbol('x',real = True)
+    X = np.linspace(-np.sqrt((4*n)+1),np.sqrt((4*n)+1),10000)
+    pol = GetHermite(n,x)
+    Poly = sym.lambdify([x],pol,'numpy')
+    Dpoly = sym.lambdify([x],sym.diff(pol,x,1),'numpy')
+    return GetRoots(Poly,Dpoly,X)
+
+def GetWeightsGHer(n):
+    roots = GetAllRootsGHer(n)
+    a = (2**(n-1))*np.math.factorial(n)*np.sqrt(np.pi)
+    return a/((n**2)*((roots*GetHermite(n-1))**2))
+
+Pesos = GetAllRootsGHer(6)
+
+print(Pesos)
+print(np.polynomial.hermite.hermgauss(6)[0])
