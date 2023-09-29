@@ -57,7 +57,7 @@ def GetRoots(f,df,x,tolerancia = 13):
             if croot not in Roots:
                 Roots = np.append(Roots, croot)
     if np.abs(f(0)) == 0. and not 0. in Roots:
-        np.append(Roots,0.)
+        Roots = np.append(Roots,0.)
         
     Roots.sort()
     
@@ -116,11 +116,32 @@ def GetAllRootsGHer(n):
     return GetRoots(Poly,Dpoly,X)
 
 def GetWeightsGHer(n):
+    x = sym.Symbol('x',real = True)
     roots = GetAllRootsGHer(n)
+    pol = GetHermite(n-1,x)
+    Poly = sym.lambdify([x],pol,'numpy')
     a = (2**(n-1))*np.math.factorial(n)*np.sqrt(np.pi)
-    return a/((n**2)*((roots*GetHermite(n-1,roots))**2))
+    return a/((n**2)*((Poly(roots))**2))
+##punto a:
+#print(GetWeightsGHer(20))
+#print(GetAllRootsGHer(20))
+##punto b:
+def IntegrateGHer(f,n):
+    I=0
+    pesos = GetWeightsGHer(n)
+    functions = f(GetAllRootsGHer(n))
+    for i in range(n):
+        I+= pesos[i]*functions[i]
+    return I
+def GetPunto18():
+    f = lambda x: 4*(x**2)*(x**2)
+    return  ((1/(np.sqrt(2)*(pow(np.pi,1/4))))**2)*IntegrateGHer(f,5) 
 
+#print(GetPunto18())
 
-#n = 1
-#print(GetAllRootsGHer(n))
-#print(np.polynomial.hermite.hermgauss(n)[0])
+################################################################################################################################################################
+########################################################################Punto 19################################################################################
+
+    
+ 
+
